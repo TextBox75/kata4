@@ -9,6 +9,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class HTTPSerializedJokeReader implements SerializedJokeReader {
+
+    private final URI uri;
+
+    public HTTPSerializedJokeReader(String uri) {
+        this.uri = URI.create(uri);
+    }
+
     @Override
     public String ReadJokes() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
@@ -17,7 +24,7 @@ public class HTTPSerializedJokeReader implements SerializedJokeReader {
 
     private String ReadJokes(HttpClient client) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://official-joke-api.appspot.com/jokes/random/25"))
+                .uri(this.uri)
                 .header("Accept", "application/json")
                 .GET()
                 .build();

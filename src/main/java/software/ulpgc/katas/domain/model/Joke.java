@@ -1,3 +1,3 @@
 package software.ulpgc.katas.domain.model;
 
-public record Joke(int id, JokeType type, String setup, String punchline) { }
+public record Joke(int id, JokeCategory category, String setup, String delivery) { }

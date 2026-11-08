@@ -3,14 +3,14 @@ package software.ulpgc.katas.infrastructure.adapters;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import software.ulpgc.katas.architecture.ports.JokeDeserializer;
 import software.ulpgc.katas.domain.model.Joke;
-import software.ulpgc.katas.domain.model.RawJoke;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class JSONJokeDeserializer implements JokeDeserializer {
+public final class JSONJokeDeserializer implements JokeDeserializer {
 
     private final String serializedJokes;
 
@@ -19,12 +19,12 @@ public class JSONJokeDeserializer implements JokeDeserializer {
     }
 
     @Override
-    public List<RawJoke> DeserializeJokes() {
-        return DeserializeJokes(new Gson().fromJson(serializedJokes, JsonArray.class).getAsJsonArray());
+    public List<Joke> deserializeJokes() {
+        return DeserializeJokes(new Gson().fromJson(serializedJokes, JsonObject.class).get("jokes").getAsJsonArray());
     }
 
-    private List<RawJoke> DeserializeJokes(JsonArray jsonJokeArray) {
-        List<RawJoke> jokes = new ArrayList<>();
+    private List<Joke> DeserializeJokes(JsonArray jsonJokeArray) {
+        List<Joke> jokes = new ArrayList<>();
 
         for (JsonElement jsonElement : jsonJokeArray) {
             jokes.add(DeserializeJokes(jsonElement));
@@ -33,7 +33,7 @@ public class JSONJokeDeserializer implements JokeDeserializer {
         return jokes;
     }
 
-    private RawJoke DeserializeJokes(JsonElement jsonElement) {
-        return new Gson().fromJson(jsonElement, RawJoke.class);
+    private Joke DeserializeJokes(JsonElement jsonElement) {
+        return new Gson().fromJson(jsonElement, Joke.class);
     }
 }

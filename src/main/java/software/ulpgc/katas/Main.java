@@ -1,8 +1,6 @@
 package software.ulpgc.katas;
 
 import software.ulpgc.katas.domain.model.Joke;
-import software.ulpgc.katas.domain.model.JokeParser;
-import software.ulpgc.katas.domain.model.RawJoke;
 import software.ulpgc.katas.infrastructure.adapters.HTTPSerializedJokeReader;
 import software.ulpgc.katas.infrastructure.adapters.JSONJokeDeserializer;
 
@@ -11,15 +9,14 @@ import java.util.List;
 
 public class Main {
     static void main() throws IOException, InterruptedException {
-        // TODO: el serialized reader indexa internamente la URL, está bien?
-        HTTPSerializedJokeReader reader = new HTTPSerializedJokeReader();
+        HTTPSerializedJokeReader reader = new HTTPSerializedJokeReader(
+                "https://v2.jokeapi.dev/joke/Any?safe-mode&type=twopart&amount=10"
+        );
+
         String serializedJokes = reader.ReadJokes();
 
         JSONJokeDeserializer deserializer = new JSONJokeDeserializer(serializedJokes);
-        List<RawJoke> rawJokes = deserializer.DeserializeJokes();
-
-        JokeParser jokeParser = new JokeParser(rawJokes);
-        List<Joke> jokes = jokeParser.toDomain();
+        List<Joke> jokes = deserializer.deserializeJokes();
 
         for (Joke joke : jokes) {
             System.out.println(joke.toString());
