@@ -1,25 +1,25 @@
 package software.ulpgc.katas;
 
-import software.ulpgc.katas.domain.model.Joke;
-import software.ulpgc.katas.infrastructure.adapters.HTTPSerializedJokeReader;
-import software.ulpgc.katas.infrastructure.adapters.JSONJokeDeserializer;
+import software.ulpgc.katas.domain.model.Post;
+import software.ulpgc.katas.infrastructure.adapters.HTTPSerializedPostReader;
+import software.ulpgc.katas.infrastructure.adapters.JSONPostDeserializer;
 
 import java.io.IOException;
 import java.util.List;
 
 public class Main {
     static void main() throws IOException, InterruptedException {
-        HTTPSerializedJokeReader reader = new HTTPSerializedJokeReader(
-                "https://v2.jokeapi.dev/joke/Any?safe-mode&type=twopart&amount=10"
+        HTTPSerializedPostReader reader = new HTTPSerializedPostReader(
+                "https://jsonplaceholder.typicode.com/posts?_limit=30"
         );
 
-        String serializedJokes = reader.ReadJokes();
+        String serializedposts = reader.readPosts();
 
-        JSONJokeDeserializer deserializer = new JSONJokeDeserializer(serializedJokes);
-        List<Joke> jokes = deserializer.deserializeJokes();
+        JSONPostDeserializer deserializer = new JSONPostDeserializer(serializedposts);
+        List<Post> posts = deserializer.deserializePosts();
 
-        for (Joke joke : jokes) {
-            System.out.println(joke.toString());
+        for (Post post : posts) {
+            System.out.println(post.toString());
         }
     }
 }
