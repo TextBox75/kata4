@@ -17,7 +17,7 @@ class HTTPTest {
     void shouldReturnNonEmptyPayloadWhenBaseUrlIsValid() throws Exception {
         HTTPSerializedJokeReader reader = new HTTPSerializedJokeReader(VALID_BASE_URL);
 
-        String jsonResponse = reader.ReadJokes();
+        String jsonResponse = reader.readJokes();
 
         assertNotNull(jsonResponse, "La respuesta no debería ser nula");
         assertFalse(jsonResponse.isBlank(), "La respuesta no debería estar vacía");
@@ -28,22 +28,28 @@ class HTTPTest {
     @Test
     @DisplayName("Punto 2: Prueba el cliente con servicio no disponible o URL inexistente")
     void shouldThrowIOExceptionWhenHostDoesNotExist() {
-        // Dominio reservado que no resolverá por DNS
         String unreachableBaseUrl = "https://servidor-falso-inexistente-kata4.com";
         HTTPSerializedJokeReader reader = new HTTPSerializedJokeReader(unreachableBaseUrl);
 
-        assertThrows(IOException.class, reader::ReadJokes,
+        assertThrows(IOException.class, reader::readJokes,
                 "Debe lanzar una IOException cuando el host no existe o no hay red");
     }
 
     @Test
-    @DisplayName("Punto 2: Prueba el cliente con una URL con esquema o sintaxis inválida")
+    @DisplayName("Punto 3: Prueba el cliente con una URL con esquema o sintaxis inválida")
     void shouldFailWhenUrlIsMalformed() {
         String invalidUrl = "htp://url-con-protocolo-invalido";
         HTTPSerializedJokeReader reader = new HTTPSerializedJokeReader(invalidUrl);
 
-        assertThrows(Exception.class, reader::ReadJokes,
+        assertThrows(Exception.class, reader::readJokes,
                 "Debe propagar error de URI/HTTP al recibir una URL mal formada");
+    }
+
+    @Test
+    @DisplayName("Punto 4: Prueba un identificador inexistente en el servicio (HTTP 404)")
+    void shouldHandleNonExistentIdentifierGracefully() {
+        HTTPSerializedJokeReader reader = new HTTPSerializedJokeReader("https://v2.jokeapi.dev/joke/Any?safe-mode&type=null");
+        assertDoesNotThrow(reader::readJokes);
     }
 
     @Test

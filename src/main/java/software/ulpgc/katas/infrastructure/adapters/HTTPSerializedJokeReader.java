@@ -17,7 +17,7 @@ public class HTTPSerializedJokeReader implements SerializedJokeReader {
     }
 
     @Override
-    public String ReadJokes() throws IOException, InterruptedException {
+    public String readJokes() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
         return ReadJokes(httpClient);
     }

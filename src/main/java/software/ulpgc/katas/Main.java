@@ -13,7 +13,7 @@ public class Main {
                 "https://v2.jokeapi.dev/joke/Any?safe-mode&type=twopart&amount=10"
         );
 
-        String serializedJokes = reader.ReadJokes();
+        String serializedJokes = reader.readJokes();
 
         JSONJokeDeserializer deserializer = new JSONJokeDeserializer(serializedJokes);
         List<Joke> jokes = deserializer.deserializeJokes();
