@@ -2,7 +2,7 @@ package tests;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import software.ulpgc.katas.infrastructure.adapters.HTTPSerializedPostReader;
+import software.ulpgc.katas.infrastructure.adapters.HTTPSerializedProductReader;
 
 import java.io.IOException;
 
@@ -10,56 +10,57 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HTTPTest {
 
-    private static final String VALID_BASE_URL = "https://jsonplaceholder.typicode.com";
+    private static final String VALID_BASE_URL = "https://dummyjson.com";
 
     @Test
-    @DisplayName("Punto 1: Ejecuta el cliente con respuesta correcta (lista o elemento)")
+    @DisplayName("Punto 1: Ejecuta el cliente con respuesta correcta")
     void shouldReturnValidJsonWhenBaseUrlAndEndpointAreCorrect() throws Exception {
-        HTTPSerializedPostReader reader = new HTTPSerializedPostReader(VALID_BASE_URL);
+        HTTPSerializedProductReader reader = new HTTPSerializedProductReader(VALID_BASE_URL);
 
-        String jsonResponse = reader.readPosts(); // o readPost(1) según tu método
+        String jsonResponse = reader.readProducts();
 
         assertNotNull(jsonResponse, "La respuesta no debe ser nula");
-        assertFalse(jsonResponse.isBlank(), "La respuesta no debe estar vacía");
+        assertFalse(jsonResponse.isBlank(), "La respuesta no debe estar en blanco");
 
-        assertTrue(jsonResponse.contains("userId"), "El JSON debe contener el campo 'userId'");
-        assertTrue(jsonResponse.contains("title"), "El JSON debe contener el campo 'title'");
+        assertTrue(jsonResponse.contains("products") || jsonResponse.contains("title"),
+                "El JSON debe contener los campos esperados del producto");
     }
 
     @Test
     @DisplayName("Punto 2: Prueba el cliente con el servicio no disponible o host inexistente")
     void shouldThrowIOExceptionWhenHostIsUnreachable() {
-        String unreachableBaseUrl = "https://servidor-falso-inexistente-kata4.com";
-        HTTPSerializedPostReader reader = new HTTPSerializedPostReader(unreachableBaseUrl);
+        String unreachableBaseUrl = "https://servidor-falso-inexistente-dummyjson.com";
+        HTTPSerializedProductReader reader = new HTTPSerializedProductReader(unreachableBaseUrl);
 
-        assertThrows(IOException.class, reader::readPosts,
-                "Debe lanzar una IOException cuando el servidor remoto no responde o la red falla");
+        assertThrows(IOException.class, reader::readProducts,
+                "Debe lanzar una IOException cuando el host no existe o falla la red");
     }
 
     @Test
-    @DisplayName("Punto 3: Prueba el cliente con una URL mal formada o inválida")
+    @DisplayName("Punto 2: Prueba el cliente con una URL mal formada o inválida")
     void shouldFailWhenUrlIsMalformed() {
         String malformedUrl = "not-a-valid-http-url";
-        HTTPSerializedPostReader reader = new HTTPSerializedPostReader(malformedUrl);
+        HTTPSerializedProductReader reader = new HTTPSerializedProductReader(malformedUrl);
 
-        assertThrows(Exception.class, reader::readPosts,
-                "Debe lanzar una excepción si la sintaxis del esquema o la URI es inválida");
+        assertThrows(Exception.class, reader::readProducts,
+                "Debe lanzar una excepción al recibir una sintaxis de URI errónea");
     }
 
     @Test
-    @DisplayName("Punto 4: Prueba un identificador inexistente en el servicio (HTTP 404)")
-    void shouldHandleNonExistentIdentifierGracefully() {
-        HTTPSerializedPostReader reader = new HTTPSerializedPostReader("https://jsonplaceholder.typicode.com/posts/9999");
-        assertDoesNotThrow(reader::readPosts);
+    @DisplayName("Punto 3: Prueba un identificador inexistente en el servicio (HTTP 404)")
+    void shouldHandleNonExistentProductIdentifierGracefully() {
+        HTTPSerializedProductReader reader = new HTTPSerializedProductReader("https://dummyjson.com/products/99999");
+        assertDoesNotThrow(() -> reader.readProducts(),
+                "No debe lanzar excepción");
     }
 
     @Test
     @DisplayName("Punto 5: Comprueba que se puede cambiar la URL base dinámicamente")
     void shouldAllowSettingDifferentBaseUrlsWithoutModifyingTheClass() {
-        String productionUrl = "https://jsonplaceholder.typicode.com";
-        String localTestUrl = "http://localhost:3000";
+        String productionUrl = "https://dummyjson.com";
+        String localTestUrl = "http://localhost:8080";
 
-        assertDoesNotThrow(() -> new HTTPSerializedPostReader(productionUrl));
-        assertDoesNotThrow(() -> new HTTPSerializedPostReader(localTestUrl));
+        assertDoesNotThrow(() -> new HTTPSerializedProductReader(productionUrl));
+        assertDoesNotThrow(() -> new HTTPSerializedProductReader(localTestUrl));
     }
 }

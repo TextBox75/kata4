@@ -1,25 +1,27 @@
 package software.ulpgc.katas;
 
-import software.ulpgc.katas.domain.model.Post;
-import software.ulpgc.katas.infrastructure.adapters.HTTPSerializedPostReader;
-import software.ulpgc.katas.infrastructure.adapters.JSONPostDeserializer;
+import software.ulpgc.katas.domain.model.Product;
+import software.ulpgc.katas.infrastructure.adapters.HTTPSerializedProductReader;
+import software.ulpgc.katas.infrastructure.adapters.JSONProductDeserializer;
 
 import java.io.IOException;
 import java.util.List;
 
 public class Main {
     static void main() throws IOException, InterruptedException {
-        HTTPSerializedPostReader reader = new HTTPSerializedPostReader(
-                "https://jsonplaceholder.typicode.com/posts?_limit=30"
+        HTTPSerializedProductReader reader = new HTTPSerializedProductReader(
+                "https://dummyjson.com/products?limit=5"
         );
 
-        String serializedposts = reader.readPosts();
+        String serializedProducts = reader.readProducts();
 
-        JSONPostDeserializer deserializer = new JSONPostDeserializer(serializedposts);
-        List<Post> posts = deserializer.deserializePosts();
+        System.out.println(serializedProducts);
 
-        for (Post post : posts) {
-            System.out.println(post.toString());
+        JSONProductDeserializer deserializer = new JSONProductDeserializer(serializedProducts);
+        List<Product> products = deserializer.deserializeProducts();
+
+        for (Product product : products) {
+            System.out.println(product.toString());
         }
     }
 }
