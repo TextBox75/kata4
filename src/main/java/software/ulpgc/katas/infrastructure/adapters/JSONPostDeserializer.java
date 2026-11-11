@@ -19,14 +19,22 @@ public final class JSONPostDeserializer implements PostDeserializer {
 
     @Override
     public List<Post> deserializePosts() {
-        return deserializePosts(new Gson().fromJson(serializedJokes, JsonElement.class).getAsJsonArray());
+        try {
+            return deserializePosts(new Gson().fromJson(serializedJokes, JsonElement.class).getAsJsonArray());
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 
     private List<Post> deserializePosts(JsonArray jsonJokeArray) {
         List<Post> jokes = new ArrayList<>();
 
         for (JsonElement jsonElement : jsonJokeArray) {
-            jokes.add(deserializePosts(jsonElement));
+            try {
+                jokes.add(deserializePosts(jsonElement));
+            } catch (Exception e) {
+                continue;
+            }
         }
 
         return jokes;
