@@ -19,20 +19,20 @@ public class HTTPSerializedJokeReader implements SerializedJokeReader {
     @Override
     public String readJokes() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
-        return ReadJokes(httpClient);
+        return readJokes(httpClient);
     }
 
-    private String ReadJokes(HttpClient client) throws IOException, InterruptedException {
+    private String readJokes(HttpClient client) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(this.uri)
                 .header("Accept", "application/json")
                 .GET()
                 .build();
 
-        return ReadJokes(client, request);
+        return readJokes(client, request);
     }
 
-    private String ReadJokes(HttpClient client, HttpRequest request) throws IOException, InterruptedException {
+    private String readJokes(HttpClient client, HttpRequest request) throws IOException, InterruptedException {
         HttpResponse<String> response = client.send(
                 request,
                 HttpResponse.BodyHandlers.ofString()
