@@ -8,18 +8,22 @@ import java.io.IOException;
 import java.util.List;
 
 public class Main {
-    static void main() throws IOException, InterruptedException {
-        HTTPSerializedPostReader reader = new HTTPSerializedPostReader(
-                "https://jsonplaceholder.typicode.com/posts?_limit=30"
-        );
+    static void main() {
+        try {
+            HTTPSerializedPostReader reader = new HTTPSerializedPostReader(
+                    "https://jsonplaceholder.typicode.com/posts?_limit=30"
+            );
 
-        String serializedposts = reader.readPosts();
+            String serializedposts = reader.readPosts();
 
-        JSONPostDeserializer deserializer = new JSONPostDeserializer(serializedposts);
-        List<Post> posts = deserializer.deserializePosts();
+            JSONPostDeserializer deserializer = new JSONPostDeserializer(serializedposts);
+            List<Post> posts = deserializer.deserializePosts();
 
-        for (Post post : posts) {
-            System.out.println(post.toString());
+            for (Post post : posts) {
+                System.out.println(post.toString());
+            }
+        } catch (Exception ex) {
+            return;
         }
     }
 }
