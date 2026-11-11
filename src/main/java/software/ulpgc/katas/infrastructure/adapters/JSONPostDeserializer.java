@@ -3,7 +3,6 @@ package software.ulpgc.katas.infrastructure.adapters;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import software.ulpgc.katas.architecture.ports.PostDeserializer;
 import software.ulpgc.katas.domain.model.Post;
 
@@ -20,20 +19,20 @@ public final class JSONPostDeserializer implements PostDeserializer {
 
     @Override
     public List<Post> deserializePosts() {
-        return DeserializeJokes(new Gson().fromJson(serializedJokes, JsonElement.class).getAsJsonArray());
+        return deserializePosts(new Gson().fromJson(serializedJokes, JsonElement.class).getAsJsonArray());
     }
 
-    private List<Post> DeserializeJokes(JsonArray jsonJokeArray) {
+    private List<Post> deserializePosts(JsonArray jsonJokeArray) {
         List<Post> jokes = new ArrayList<>();
 
         for (JsonElement jsonElement : jsonJokeArray) {
-            jokes.add(DeserializeJokes(jsonElement));
+            jokes.add(deserializePosts(jsonElement));
         }
 
         return jokes;
     }
 
-    private Post DeserializeJokes(JsonElement jsonElement) {
+    private Post deserializePosts(JsonElement jsonElement) {
         return new Gson().fromJson(jsonElement, Post.class);
     }
 }

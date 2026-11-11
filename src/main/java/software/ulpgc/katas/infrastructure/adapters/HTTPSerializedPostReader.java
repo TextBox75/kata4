@@ -19,20 +19,20 @@ public class HTTPSerializedPostReader implements SerializedPostReader {
     @Override
     public String readPosts() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
-        return ReadPosts(httpClient);
+        return readPosts(httpClient);
     }
 
-    private String ReadPosts(HttpClient client) throws IOException, InterruptedException {
+    private String readPosts(HttpClient client) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(this.uri)
                 .header("Accept", "application/json")
                 .GET()
                 .build();
 
-        return ReadPosts(client, request);
+        return readPosts(client, request);
     }
 
-    private String ReadPosts(HttpClient client, HttpRequest request) throws IOException, InterruptedException {
+    private String readPosts(HttpClient client, HttpRequest request) throws IOException, InterruptedException {
         HttpResponse<String> response = client.send(
                 request,
                 HttpResponse.BodyHandlers.ofString()
