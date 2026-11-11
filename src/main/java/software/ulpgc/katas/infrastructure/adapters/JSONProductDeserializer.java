@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import software.ulpgc.katas.architecture.ports.ProductDeserializer;
 import software.ulpgc.katas.domain.model.Product;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +21,22 @@ public final class JSONProductDeserializer implements ProductDeserializer {
 
     @Override
     public List<Product> deserializeProducts() {
-        return deserializeProducts(new Gson().fromJson(serializedProducts, JsonObject.class).get("products").getAsJsonArray());
+        try {
+            return deserializeProducts(new Gson().fromJson(serializedProducts, JsonObject.class).get("products").getAsJsonArray());
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
     }
 
     private List<Product> deserializeProducts(JsonArray jsonJokeArray) {
         List<Product> Products = new ArrayList<>();
 
         for (JsonElement jsonElement : jsonJokeArray) {
-            Products.add(deserializeProducts(jsonElement));
+            try {
+                Products.add(deserializeProducts(jsonElement));
+            } catch (Exception e) {
+                continue;
+            }
         }
 
         return Products;

@@ -19,20 +19,20 @@ public class HTTPSerializedProductReader implements SerializedProductReader {
     @Override
     public String readProducts() throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
-        return ReadProducts(httpClient);
+        return readProducts(httpClient);
     }
 
-    private String ReadProducts(HttpClient client) throws IOException, InterruptedException {
+    private String readProducts(HttpClient client) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(this.uri)
                 .header("Accept", "application/json")
                 .GET()
                 .build();
 
-        return ReadProducts(client, request);
+        return readProducts(client, request);
     }
 
-    private String ReadProducts(HttpClient client, HttpRequest request) throws IOException, InterruptedException {
+    private String readProducts(HttpClient client, HttpRequest request) throws IOException, InterruptedException {
         HttpResponse<String> response = client.send(
                 request,
                 HttpResponse.BodyHandlers.ofString()
