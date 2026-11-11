@@ -20,20 +20,20 @@ public final class JSONJokeDeserializer implements JokeDeserializer {
 
     @Override
     public List<Joke> deserializeJokes() {
-        return DeserializeJokes(new Gson().fromJson(serializedJokes, JsonObject.class).get("jokes").getAsJsonArray());
+        return deserializeJokes(new Gson().fromJson(serializedJokes, JsonObject.class).get("jokes").getAsJsonArray());
     }
 
-    private List<Joke> DeserializeJokes(JsonArray jsonJokeArray) {
+    private List<Joke> deserializeJokes(JsonArray jsonJokeArray) {
         List<Joke> jokes = new ArrayList<>();
 
         for (JsonElement jsonElement : jsonJokeArray) {
-            jokes.add(DeserializeJokes(jsonElement));
+            jokes.add(deserializeJokes(jsonElement));
         }
 
         return jokes;
     }
 
-    private Joke DeserializeJokes(JsonElement jsonElement) {
+    private Joke deserializeJokes(JsonElement jsonElement) {
         return new Gson().fromJson(jsonElement, Joke.class);
     }
 }
