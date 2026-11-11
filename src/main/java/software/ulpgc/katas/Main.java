@@ -8,20 +8,22 @@ import java.io.IOException;
 import java.util.List;
 
 public class Main {
-    static void main() throws IOException, InterruptedException {
-        HTTPSerializedProductReader reader = new HTTPSerializedProductReader(
-                "https://dummyjson.com/products?limit=5"
-        );
+    static void main() {
+        try {
+            HTTPSerializedProductReader reader = new HTTPSerializedProductReader(
+                    "https://dummyjson.com/products?limit=5"
+            );
 
-        String serializedProducts = reader.readProducts();
+            String serializedProducts = reader.readProducts();
 
-        System.out.println(serializedProducts);
+            JSONProductDeserializer deserializer = new JSONProductDeserializer(serializedProducts);
+            List<Product> products = deserializer.deserializeProducts();
 
-        JSONProductDeserializer deserializer = new JSONProductDeserializer(serializedProducts);
-        List<Product> products = deserializer.deserializeProducts();
-
-        for (Product product : products) {
-            System.out.println(product.toString());
+            for (Product product : products) {
+                System.out.println(product.toString());
+            }
+        } catch (Exception e) {
+            return;
         }
     }
 }
