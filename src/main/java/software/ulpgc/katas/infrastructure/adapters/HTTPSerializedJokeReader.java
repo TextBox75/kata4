@@ -54,7 +54,7 @@ public class HTTPSerializedJokeReader implements SerializedJokeReader {
             case InterruptedException ex -> new IOException("La petición HTTP fue interrumpida.");
             case HttpTimeoutException ex -> new IOException("Tiempo de espera agotado.");
             case UnknownHostException ex -> new IOException("Servicio no disponible: " + uri.getHost());
-            case ConnectException ex -> new IOException("Servicio no disponible: " + uri.getHost());
+            case ConnectException ex -> new IOException("Comprueba to conexión a internet o URI.");
             case IOException io -> io;
             default -> new IOException("Error inesperado.", e);
         };
