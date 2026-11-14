@@ -23,7 +23,7 @@ public final class JSONJokeDeserializer implements JokeDeserializer {
         try {
             return deserializeJokes(new Gson().fromJson(serializedJokes, JsonObject.class).get("jokes").getAsJsonArray());
         } catch (Exception e) {
-            return new ArrayList<>();
+            throw new IllegalArgumentException("El formato general del JSON recibido es inválido.");
         }
     }
 
