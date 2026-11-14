@@ -20,12 +20,12 @@ public class HTTPSerializedJokeReader implements SerializedJokeReader {
     }
 
     @Override
-    public String readJokes() throws IOException, InterruptedException {
+    public String readJokes() throws IOException {
         HttpClient httpClient = HttpClient.newHttpClient();
         return readJokes(httpClient);
     }
 
-    private String readJokes(HttpClient client) throws IOException, InterruptedException {
+    private String readJokes(HttpClient client) throws IOException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(this.uri)
                 .header("Accept", "application/json")
@@ -35,27 +35,28 @@ public class HTTPSerializedJokeReader implements SerializedJokeReader {
         return readJokes(client, request);
     }
 
-    private String readJokes(HttpClient client, HttpRequest request) throws IOException, InterruptedException {
+    private String readJokes(HttpClient client, HttpRequest request) throws IOException {
         try {
-            HttpResponse<String> response = client.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofString()
-            );
-
-            if (response.statusCode() >= 400) {
-                throw new IOException("Error HTTP " + response.statusCode() + ": El servidor rechazó la petición o el recurso no existe.");
-            } else if (response.statusCode() != 200) {
-                throw new IOException("Respuesta inesperada del servidor (Código HTTP " + response.statusCode() + ").");
-            }
-
-            return response.body();
-
-        } catch (UnknownHostException | ConnectException e) {
-            throw new IOException("Servicio no disponible: No se pudo conectar con el servidor (" + uri.getHost() + "). Comprueba tu conexión o la URL.");
-        } catch (HttpTimeoutException e) {
-            throw new IOException("Tiempo de espera agotado: El servidor tardó demasiado en responder.");
-        } catch (InterruptedException e) {
-            throw new IOException("La petición HTTP fue interrumpida inesperadamente.");
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            return validateResponse(response);
+        } catch (IOException | InterruptedException e) {
+            throw toReadableException(e);
         }
+    }
+
+    private String validateResponse(HttpResponse<String> response) throws IOException {
+        if (response.statusCode() == 200) return response.body();
+        throw new IOException("Error HTTP " + response.statusCode() + ": No se pudo obtener el recurso.");
+    }
+
+    private IOException toReadableException(Exception e) {
+        return switch (e) {
+            case InterruptedException ex -> new IOException("La petición HTTP fue interrumpida.");
+            case HttpTimeoutException ex -> new IOException("Tiempo de espera agotado.");
+            case UnknownHostException ex -> new IOException("Servicio no disponible: " + uri.getHost());
+            case ConnectException ex -> new IOException("Servicio no disponible: " + uri.getHost());
+            case IOException io -> io;
+            default -> new IOException("Error inesperado.", e);
+        };
     }
 }
