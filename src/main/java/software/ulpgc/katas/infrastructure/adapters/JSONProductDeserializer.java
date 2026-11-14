@@ -24,14 +24,14 @@ public final class JSONProductDeserializer implements ProductDeserializer {
         try {
             return deserializeProducts(new Gson().fromJson(serializedProducts, JsonObject.class).get("products").getAsJsonArray());
         } catch (Exception e) {
-            return new ArrayList<>();
+            throw new IllegalArgumentException("El formato general del JSON recibido es inválido.");
         }
     }
 
-    private List<Product> deserializeProducts(JsonArray jsonJokeArray) {
+    private List<Product> deserializeProducts(JsonArray jsonProductArray) {
         List<Product> Products = new ArrayList<>();
 
-        for (JsonElement jsonElement : jsonJokeArray) {
+        for (JsonElement jsonElement : jsonProductArray) {
             try {
                 Products.add(deserializeProducts(jsonElement));
             } catch (Exception e) {
