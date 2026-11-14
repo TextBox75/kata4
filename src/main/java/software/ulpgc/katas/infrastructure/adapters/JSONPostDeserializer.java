@@ -11,33 +11,33 @@ import java.util.List;
 
 public final class JSONPostDeserializer implements PostDeserializer {
 
-    private final String serializedJokes;
+    private final String serializedPosts;
 
-    public JSONPostDeserializer(String serializedJokes) {
-        this.serializedJokes = serializedJokes;
+    public JSONPostDeserializer(String serializedPosts) {
+        this.serializedPosts = serializedPosts;
     }
 
     @Override
     public List<Post> deserializePosts() {
         try {
-            return deserializePosts(new Gson().fromJson(serializedJokes, JsonElement.class).getAsJsonArray());
+            return deserializePosts(new Gson().fromJson(serializedPosts, JsonElement.class).getAsJsonArray());
         } catch (Exception e) {
-            return new ArrayList<>();
+            throw new IllegalArgumentException("El formato general del JSON recibido es inválido.");
         }
     }
 
-    private List<Post> deserializePosts(JsonArray jsonJokeArray) {
-        List<Post> jokes = new ArrayList<>();
+    private List<Post> deserializePosts(JsonArray jsonPostArray) {
+        List<Post> posts = new ArrayList<>();
 
-        for (JsonElement jsonElement : jsonJokeArray) {
+        for (JsonElement jsonElement : jsonPostArray) {
             try {
-                jokes.add(deserializePosts(jsonElement));
+                posts.add(deserializePosts(jsonElement));
             } catch (Exception e) {
                 continue;
             }
         }
 
-        return jokes;
+        return posts;
     }
 
     private Post deserializePosts(JsonElement jsonElement) {
