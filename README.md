@@ -65,7 +65,7 @@ Todas las repeticiones mantienen la misma arquitectura desacoplada:
 
 ### Enlace al vídeo
 
-(Enlace de sustitución con duración máxima de 7 minutos).
+https://www.youtube.com/watch?v=Dwny4EU64NY
 
 ---
 
